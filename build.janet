@@ -9,13 +9,20 @@
       line-height: 1.75;
       font-size: 1.25em;
     }
+
+    pre {
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
     </style>
   </head>
   <body>
-  <article>`)
+  <article>
+  <pre>`)
 
 (def end
-  `</article>
+  `</pre>
+  </article>
   </body>
   </html>`)
 
