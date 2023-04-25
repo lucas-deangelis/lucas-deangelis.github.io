@@ -11,6 +11,35 @@
   </style>
 </head>
 <body>
-<article>git.txt</article>
+<article>My git config
+
+Email/name
+$ git config --global user.email "deangelis.lucas [at] outlook [dot] com"
+$ git config --global user.name "Lucas DE ANGELIS"
+
+
+Aliases. `fuki` allows me to make commit without messages, `afp` adds everything, commits and pushes.
+This is for stuff like notes where I don't add any commit messages, and I don't use the separation between add/commit/push.
+`afp` is actually a function so that I can still add a message if I want, for example `git afp "notes about my git config"`.
+$ git config --global alias.fuki "commit --allow-empty-message -m ''"
+$ git config --global alias.afp '! afp() { git add . && git commit --allow-empty-message -m "$1" && git push ; } ; afp'
+
+More details about `afp`: `!` will make git run an external command instead of a git subcommand [1].
+The way `afp` works is that it defines the `afp` function, and then immediatly calls it.
+This might cause issues with the way different shells define their functions.
+I'm currently using zsh and it works fine.
+If you want to know which shell is called, you can do the following:
+$ git config --global alias.printShell "echo $SHELL"
+$ git printShell
+$ # /bin/zsh in my case
+
+
+Rebase to avoid merge commits.
+I'm not 100% sure about this one as rebase is more complex than just "avoid merge commits", but for my basic git usage it's fine.
+$ git config --global pull.rebase true
+
+
+References:
+[1]: https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases</article>
 </body>
 </html>
