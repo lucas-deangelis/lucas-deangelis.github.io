@@ -1,9 +1,7 @@
-# lucas-deangelis.github.io
+# 
 
-Personal website (mainly a way to store notes)
+Write a page as a txt file, then `cat page.txt | janet build.janet > docs/page.html`
 
 ## Todo
 
-- [ ] CSS (water.css?)
-- [ ] Dark theme
-- [ ] Proper markup instead of bare txt files
+- [ ] Put the """whole build process""" inside the `build.janet`
