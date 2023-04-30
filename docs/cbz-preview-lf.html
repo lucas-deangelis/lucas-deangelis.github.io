@@ -43,7 +43,7 @@ exit 1
 
 I give a "5000" to comicthumb at the end so that it creates a pretty big image, since the preview on lf can take almost half of my screen. I don't want to have a small image that'll look blurry scaled-up.
 
-So this works. But for some reason it's really slow. The `comicthumb` seems file, at least when used in isolation.
+So this works. But for some reason it's really slow. The `comicthumb` seems file, at least when used in isolation. EDIT: After benchmarking it, `comicthumb` also seems to take a while. Easily 2/3 seconds. A quick profiling (python cprofile and snakeviz for the flamegraph) shows that ~70/80% of the run time is image encoding, and the rest is almost all image decoding. I'll try to make a toy implementation in something else and see if it's any faster.
 
 I was also curious to see if changing sha256sum to something else made a difference. md5sum seems to take the same time, xxh32sum gives a nice improvement (0.5 ms instead of 0.7 ms). Adding a dependency for 0.2 ms seems a bit wasteful
 
