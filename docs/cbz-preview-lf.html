@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+  <style>
+  html {
+    max-width: 70ch;
+    padding: 3em 1em;
+    margin: auto;
+    line-height: 1.75;
+    font-size: 1.25em;
+  }
+
+  pre {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  </style>
+</head>
+<body>
+<article>
+<pre>See preview of cbz files with lf
+
+My current lf has preview configured in a file called "scope" in the lf config folder (`~/.config/lf`). I'd like to add cbz files so I can see previews for my mangas.
+The only thing I've found that can make thumbnails for cbz files is `comicthumb`, which on arch linux comes packages with the `comix` software. `comix` takes quite a while to install, and is pretty big, so the first possible improvement to my setup is to have an isolated comicthumb.
+
+Next I need to edit scope to handle cbz files and use comicthumb. My current `scope` comes from LARBS (https://larbs.sh). The way it recognizes different file types is with `file --dereference --brief --mimi-type -- "$1"`. However, `.cbz` isn't really defined as a file format. The general guideline is "a zip file", sometimes there are also details like "the images should be named <title>_<pagenumber>.png", some programs sort pages in a way that if you don't have padding with zeros, the program will show you page 1, then 11, then 12, then 13 instead of 1 then 2 then 3. I've seen some mention of a metadata.xml in the archive but I don't know what it's supposed to contain. I've seen mentions of a `application/vnd.comicbook+zip` but I don't know how people differentiate a zip file from a cbz file other than through the extension. So that's what I do, if the file command sees an `application/*zip` file, I do another check on the extension. If it's `.cbz` treat it as a `.cbz`, if not treat it as a regular zip file. Here's the code for the whole thing:
+
+```
+case "$(file --dereference --brief --mime-type -- "$1")" in
+# Other types removed
+	application/*zip)
+		if [[ "$1" == *.cbz ]]; then
+			CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
+			[ ! -f "$CACHE.jpg" ] && comicthumb "$1" "$CACHE.png" 5000
+			image "$CACHE.png" "$2" "$3" "$4" "$5" "$1"
+		else
+			atool --list -- "$1"
+		fi
+		;;
+esac
+exit 1
+
+```
+
+I give a "5000" to comicthumb at the end so that it creates a pretty big image, since the preview on lf can take almost half of my screen. I don't want to have a small image that'll look blurry scaled-up.
+
+So this works. But for some reason it's really slow. The `comicthumb` seems file, at least when used in isolation.
+
+I was also curious to see if changing sha256sum to something else made a difference. md5sum seems to take the same time, xxh32sum gives a nice improvement (0.5 ms instead of 0.7 ms). Adding a dependency for 0.2 ms seems a bit wasteful
+
+Possible improvements:
+- package comicthumb alone
+- if not possible, write something equivalent
+- make it faster (how?)
+- see if there's a way to improve comicthumb itself</pre>
+</article>
+</body>
+</html>
