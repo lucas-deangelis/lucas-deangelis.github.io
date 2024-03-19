@@ -1,0 +1,2 @@
+- [ ] Have markdown somehow
+- [ ] Flake with dev env including everything needed

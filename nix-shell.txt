@@ -1,0 +1,83 @@
+An example of a simple `shell.nix`
+
+2024-03-19
+
+Here is what I use for this repo:
+
+```nix
+{ pkgs ? import <nixpkgs> { } }:
+
+pkgs.mkShell {
+  buildInputs = [
+    pkgs.janet
+  ];
+}
+```
+
+I need Janet because I have a very simple script to transform `.txt` files into `.html` files. I used Janet because Ian Henry made it look very cool in his book Janet for Mortals (https://janet.guide/), and I wanted to try it a bit.
+
+This is a function that has one parameter, `pkgs`, which has a default value of `import <nixpkgs> { }`. `<nixpkgs>` is described as "Search path for Nix files. Value determined by $NIX_PATH environment variable." in the Nix language reference (https://nixos.org/manual/nix/stable/language/).
+
+In that function we call the `pkgs.mkShell` ("packages dot make shell" is how I interpret it) function, a "specialized `stdenv.mkDerivation` that removes some repetition when using it with `nix-shell` (or `nix develop`)." (https://ryantm.github.io/nixpkgs/builders/special/mkshell/). Reading those docs I realize that I can use the `packages` attribute instead of the `buildInputs`. `buildInputs` comes from `stdenv.mkDerivation`, but I don't understand the differences. Let's try it, by replacing the `shell.nix` with the following:
+
+```nix
+{ pkgs ? import <nixpkgs> { } }:
+
+pkgs.mkShell {
+  packages = [
+    pkgs.janet
+  ];
+}
+```
+
+Then I cd out and in again (direnv magic), and:
+
+```
+$ which janet
+/nix/store/zfp3y7xh240ngq8sacxiirm8y4im2v00-janet-1.33.0/bin/janet
+```
+
+So it works, great. I can also use the `shellHook` attribute to add functions executed by bash:
+
+```nix
+{ pkgs ? import <nixpkgs> { } }:
+
+pkgs.mkShell {
+  packages = [
+    pkgs.janet
+  ];
+
+  shellHook = ''
+    echo "Welcome to the Nix zone"
+  '';
+}
+```
+
+Let's try it:
+
+```shell
+$ cd ..
+$ cd lucas-deangelis.github.io
+Welcome to the Nix zone
+```
+
+It works.
+
+Let's try to make it more reproducible, following https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs. What do I mean by this? Currently we don't specify which `<nixpkgs>` we want, so we could get one where janet does not work or work differently. This is step 4 of the "First steps" part of the Nix tutorial (https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs). What we want to do is replace `<nixpkgs>` by something that will not change. The article shows how to fetch a specific Github release from the nixpkgs repository, with `fetchTarball`. To get a specific commit they recommand going to https://status.nixos.org/, picking nixos-23.11 (the stable release of NixOS) or nixos-unstable. I think you're supposed to click on the short commit hash, then it sends you to https://github.com/NixOS/nixpkgs/commit/614b4613980a522ba49f0d194531beddbb7220d3 for example, here you take the long commit hash ("614b4613980a522ba49f0d194531beddbb7220d3"), and adapt their example by replacing the commit hash:
+
+```nix
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/614b4613980a522ba49f0d194531beddbb7220d3.tar.gz" ) { } }:
+
+pkgs.mkShell {
+  packages = [
+    pkgs.janet
+  ];
+}
+```
+
+It works! Takes a small while to download but Janet still work, and now I don't have to worry that it'll suddenly not work, which is part of the reason why I use Nix.
+
+Open questions:
+
+- What's the difference between `buildInputs` from `stdenv.mkDerivation` and `packages` from `pkgs.mkShell`?
+- How to make that into a flake?
