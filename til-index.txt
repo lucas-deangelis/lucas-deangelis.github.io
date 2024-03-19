@@ -1,0 +1,3 @@
+TIL, meaning "Today I learned"
+
+Intended as somewhere to dump stuff I learned, with explanations.
