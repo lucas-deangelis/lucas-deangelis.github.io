@@ -1,18 +1,69 @@
 <html lang="en">
 <head>
-  <style>
-  html {
-    max-width: 70ch;
-    padding: 3em 1em;
-    margin: auto;
-    line-height: 1.75;
-    font-size: 1.25em;
-  }
-  </style>
+	<style>
+		/*
+			Josh's Custom CSS Reset
+			https://www.joshwcomeau.com/css/custom-css-reset/
+			Thanks Josh!
+		*/
+		*, *::before, *::after {
+			box-sizing: border-box;
+		}
+
+		* {
+			margin: 0;
+		}
+
+		body {
+			line-height: 1.5;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		img, picture, video, canvas, svg {
+			display: block;
+			max-width: 100%;
+		}
+
+		input, button, textarea, select {
+			font: inherit;
+		}
+
+		p, h1, h2, h3, h4, h5, h6 {
+			overflow-wrap: break-word;
+		}
+
+		/*
+			100 Bytes of CSS to look great everywhere, by swyx.
+			https://www.swyx.io/css-100-bytes
+			Thanks swyx!
+		*/
+		html {
+			max-width: 70ch;
+			padding: 3em 1em;
+			margin: auto;
+			line-height: 1.75;
+			font-size: 1.25em;
+		}
+
+		/*
+			Optional 100 more bytes, by swyx, slightly tweaked.
+			https://www.swyx.io/css-100-bytes#optional-100-more-bytes
+			Thanks again swyx!
+		*/
+		h1, h2, h3, h4, h5, h6 {
+			margin: 3em 0 1em;
+		}
+
+		p,ul,ol {
+			margin-bottom: 2em;
+			color: #1d1d1d;
+			font-family: sans-serif;
+		}
+	</style>
 </head>
 <body>
-<article>
-<h1 id="brioche">Brioche</h1>
+	<article>
+		<h1 id="brioche">Brioche</h1>
 
 <p>Ingredients:</p>
 
@@ -42,6 +93,6 @@
 <li>When the top becomes shiny, reduce the temperature to 150°C (300°F) until you can stick a knife (or chopstick) in the center of the brioche and it comes out clean. It&rsquo;s done!</li>
 </ol>
 
-</article>
+	</article>
 </body>
 </html>
